@@ -6,169 +6,264 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func WrapGetRepoMetadataRequest(in *pb.GetRepoMetadataRequest) (*Message, error) {
+func WrapGetRepoMetadataRequest(in *pb.GetRepoMetadataRequest) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(GetRepoMetadata, payload), nil
+			return NewTrackedRPCMessage(GetRepoMetadata, payload), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapGetRepoMetadataResponse(in *pb.GetRepoMetadataResponse, id MessageID) (*Message, error) {
+func WrapGetRepoMetadataResponse(in *pb.GetRepoMetadataResponse, id MessageID) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewResponseMessage(GetRepoMetadata, payload, id), nil
+			return NewResponseRPCMessage(GetRepoMetadata, payload, id), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapRootRequest(in *pb.RootRequest) (*Message, error) {
+func WrapRootRequest(in *pb.RootRequest) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(Root, payload), nil
+			return NewTrackedRPCMessage(Root, payload), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapRootResponse(in *pb.RootResponse, id MessageID) (*Message, error) {
+func WrapRootResponse(in *pb.RootResponse, id MessageID) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewResponseMessage(Root, payload, id), nil
+			return NewResponseRPCMessage(Root, payload, id), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapHasChunksRequest(in *pb.HasChunksRequest) (*Message, error) {
+func WrapHasChunksRequest(in *pb.HasChunksRequest) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(HasChunks, payload), nil
+			return NewTrackedRPCMessage(HasChunks, payload), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapGetDownloadLocsRequest(in *pb.GetDownloadLocsRequest) (*Message, error) {
+func WrapHasChunksResponse(in *pb.HasChunksResponse, id MessageID) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(GetDownloadLocations, payload), nil
+			return NewResponseRPCMessage(HasChunks, payload, id), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapGetUploadLocsRequest(in *pb.GetUploadLocsRequest) (*Message, error) {
+func WrapListTableFilesRequest(in *pb.ListTableFilesRequest) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(GetUploadLocations, payload), nil
+			return NewTrackedRPCMessage(ListTableFiles, payload), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapRebaseRequest(in *pb.RebaseRequest) (*Message, error) {
+func WrapListTableFilesResponse(in *pb.ListTableFilesResponse, id MessageID) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(Rebase, payload), nil
+			return NewResponseRPCMessage(ListTableFiles, payload, id), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapCommitRequest(in *pb.CommitRequest) (*Message, error) {
+func WrapGetUploadLocsRequest(in *pb.GetUploadLocsRequest) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(Commit, payload), nil
+			return NewTrackedRPCMessage(GetUploadLocations, payload), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapListTableFilesRequest(in *pb.ListTableFilesRequest) (*Message, error) {
+func WrapGetUploadLocsResponse(in *pb.GetUploadLocsResponse, id MessageID) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(ListTableFiles, payload), nil
+			return NewResponseRPCMessage(GetUploadLocations, payload, id), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapRefreshTableFileUrlRequest(in *pb.RefreshTableFileUrlRequest) (*Message, error) {
+func WrapAddTableFilesRequest(in *pb.AddTableFilesRequest) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(RefreshTableFileUrl, payload), nil
+			return NewTrackedRPCMessage(AddTableFiles, payload), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapAddTableFilesRequest(in *pb.AddTableFilesRequest) (*Message, error) {
+func WrapAddTableFilesResponse(in *pb.AddTableFilesResponse, id MessageID) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewTrackedMessage(AddTableFiles, payload), nil
+			return NewResponseRPCMessage(AddTableFiles, payload, id), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapStreamingDownloadLocsRequest(in *pb.GetDownloadLocsRequest, id MessageID) (*Message, error) {
+func WrapCommitRequest(in *pb.CommitRequest) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewStreamingMessage(StreamDownloadLocations, payload, id), nil
+			return NewTrackedRPCMessage(Commit, payload), nil
 		}
 	}
 	return nil, nil
 }
 
-func WrapStreamingDownloadLocsResponse(in *pb.GetDownloadLocsResponse, id MessageID) (*Message, error) {
+func WrapCommitResponse(in *pb.CommitResponse, id MessageID) (*RPCMessage, error) {
 	if in != nil {
 		payload, err := proto.Marshal(in)
 		if err != nil {
 			return nil, err
 		} else if payload != nil {
-			return NewStreamingMessage(StreamDownloadLocations, payload, id), nil
+			return NewResponseRPCMessage(Commit, payload, id), nil
+		}
+	}
+	return nil, nil
+}
+func WrapRebaseRequest(in *pb.RebaseRequest) (*RPCMessage, error) {
+	if in != nil {
+		payload, err := proto.Marshal(in)
+		if err != nil {
+			return nil, err
+		} else if payload != nil {
+			return NewTrackedRPCMessage(Rebase, payload), nil
+		}
+	}
+	return nil, nil
+}
+
+func WrapRebaseResponse(in *pb.RebaseResponse, id MessageID) (*RPCMessage, error) {
+	if in != nil {
+		payload, err := proto.Marshal(in)
+		if err != nil {
+			return nil, err
+		} else if payload != nil {
+			return NewResponseRPCMessage(Rebase, payload, id), nil
+		}
+	}
+	return nil, nil
+}
+
+func WrapGetDownloadLocsRequest(in *pb.GetDownloadLocsRequest) (*RPCMessage, error) {
+	if in != nil {
+		payload, err := proto.Marshal(in)
+		if err != nil {
+			return nil, err
+		} else if payload != nil {
+			return NewTrackedRPCMessage(GetDownloadLocations, payload), nil
+		}
+	}
+	return nil, nil
+}
+
+func WrapGetDownloadLocsResponse(in *pb.GetDownloadLocsResponse, id MessageID) (*RPCMessage, error) {
+	if in != nil {
+		payload, err := proto.Marshal(in)
+		if err != nil {
+			return nil, err
+		} else if payload != nil {
+			return NewResponseRPCMessage(GetDownloadLocations, payload, id), nil
+		}
+	}
+	return nil, nil
+}
+
+func WrapRefreshTableFileUrlRequest(in *pb.RefreshTableFileUrlRequest) (*RPCMessage, error) {
+	if in != nil {
+		payload, err := proto.Marshal(in)
+		if err != nil {
+			return nil, err
+		} else if payload != nil {
+			return NewTrackedRPCMessage(RefreshTableFileUrl, payload), nil
+		}
+	}
+	return nil, nil
+}
+
+func WrapRefreshTableFileUrlResponse(in *pb.RefreshTableFileUrlResponse, id MessageID) (*RPCMessage, error) {
+	if in != nil {
+		payload, err := proto.Marshal(in)
+		if err != nil {
+			return nil, err
+		} else if payload != nil {
+			return NewResponseRPCMessage(RefreshTableFileUrl, payload, id), nil
+		}
+	}
+	return nil, nil
+}
+
+func WrapStreamingDownloadLocsRequest(in *pb.GetDownloadLocsRequest, id MessageID) (*RPCMessage, error) {
+	if in != nil {
+		payload, err := proto.Marshal(in)
+		if err != nil {
+			return nil, err
+		} else if payload != nil {
+			return NewStreamingRPCMessage(StreamDownloadLocations, payload, id), nil
+		}
+	}
+	return nil, nil
+}
+
+func WrapStreamingDownloadLocsResponse(in *pb.GetDownloadLocsResponse, id MessageID) (*RPCMessage, error) {
+	if in != nil {
+		payload, err := proto.Marshal(in)
+		if err != nil {
+			return nil, err
+		} else if payload != nil {
+			return NewStreamingRPCMessage(StreamDownloadLocations, payload, id), nil
 		}
 	}
 	return nil, nil

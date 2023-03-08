@@ -56,11 +56,8 @@ func mainRequestProxy() {
 	listener, _ := net.Listen("tcp", ":"+strconv.FormatUint(uint64(proxyConfig.GrpcPort), 10))
 
 	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		requestProxy.Start()
-		wg.Done()
-	}()
+	wg.Add(1)
+	requestProxy.Start()
 
 	signalChannel := make(chan os.Signal)
 	signal.Notify(signalChannel, os.Interrupt, syscall.SIGTERM, syscall.SIGKILL)
@@ -90,12 +87,8 @@ func mainResponseProxy() {
 	if err != nil {
 		log.Fatalln("Could not create response responseProxy:", err.Error())
 	}
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	go func() {
-		responseProxy.Start()
-		wg.Done()
-	}()
+
+	responseProxy.Start()
 
 	signalChannel := make(chan os.Signal)
 	signal.Notify(signalChannel, os.Interrupt, syscall.SIGTERM, syscall.SIGKILL)
@@ -104,6 +97,5 @@ func mainResponseProxy() {
 		break
 	}
 
-	wg.Wait()
 	log.Println("Response Proxy Halted")
 }

@@ -4,35 +4,35 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/santidhammo/dkr/messages"
 	"log"
+	"sync"
 	"time"
 )
 
 /*
-RPCConsumer consumes events from an RPC kafka topic, en convert them into messages.
+MessageConsumer consumes events from an RPC kafka topic, en convert them into messages.
 */
-type RPCConsumer struct {
+type MessageConsumer struct {
 	kafkaConfig    *kafka.ConfigMap
 	topic          string
-	messageHandler func(*messages.Message)
-	isClosedFn     func() bool
+	messageHandler func(messages.Message)
+	closeWg        *sync.WaitGroup
 }
 
 /*
-NewRPCConsumer creates a new RPCConsumer.
+NewMessageConsumer creates a new MessageConsumer.
 
-An RPCConsumer is created using a kafka configuration map, a topic name a message handler handling
+An MessageConsumer is created using a kafka configuration map, a topic name a message handler handling
 converted messages from events and possibly a function indicating to close the consumer.
 */
-func NewRPCConsumer(
+func NewMessageConsumer(
 	kafkaConfig *kafka.ConfigMap,
 	topic string,
-	messageHandler func(message *messages.Message),
-	isClosedFn func() bool) RPCConsumer {
-	return RPCConsumer{
+	messageHandler func(message messages.Message)) *MessageConsumer {
+	return &MessageConsumer{
 		kafkaConfig,
 		topic,
 		messageHandler,
-		isClosedFn,
+		nil,
 	}
 }
 
@@ -42,7 +42,8 @@ Start creates a Kafka consumer and starts polling the consumer.
 The events received from the consumer are send to the messageHandler function until either the isClosedFn
 function returns true, or the process is exited.
 */
-func (c *RPCConsumer) Start() {
+func (c *MessageConsumer) Start() {
+	log.Println("Starting RPC consumer for:", c.topic)
 	first := true
 retry:
 	for {
@@ -65,12 +66,14 @@ retry:
 		}
 		for {
 			event := consumer.Poll(10)
-			if c.isClosedFn != nil && c.isClosedFn() {
-				log.Println("Closing RPC consumer")
+			if c.closeWg != nil {
+				log.Println("Closing RPC consumer for:", c.topic)
 				err := consumer.Close()
 				if err != nil {
 					log.Println("Could not close RPC consumer:", err.Error())
 				}
+				log.Println("Closed RPC consumer for:", c.topic)
+				c.closeWg.Done()
 				return
 			}
 			switch e := event.(type) {
@@ -97,4 +100,13 @@ retry:
 			}
 		}
 	}
+}
+
+func (c *MessageConsumer) Close() {
+	newCloseWg := &sync.WaitGroup{}
+	newCloseWg.Add(1)
+	// Note, do not assign to c.closeWg earlier, otherwise it will end up in a deadlock
+	c.closeWg = newCloseWg
+	newCloseWg.Wait()
+	c.closeWg = nil
 }

@@ -12,10 +12,8 @@ type ResponseProxyConfig struct {
 	Directory string
 	RemoteURL string
 
-	ConsumingRPCTopic   string
-	ProducingRPCTopic   string
-	ConsumingChunkTopic string
-	ProducingChunkTopic string
+	ConsumingTopic string
+	ProducingTopic string
 }
 
 var responseProxyConfig *ResponseProxyConfig = nil
@@ -28,10 +26,8 @@ func GetResponseProxyConfig() *ResponseProxyConfig {
 	directory := flag.String("dir", "", "Directory which contains the chunk storage, if not set, uses the current working directory")
 	remoteURL := flag.String("remote-url", "localhost:50051", "URL with the endpoint of the remote")
 
-	consumingRPCTopic := flag.String("consuming-rpc-topic", "dkr-request", "This topic is used to retrieve the requests from the request-proxy")
-	producingRPCTopic := flag.String("producing-rpc-topic", "dkr-response", "This topic is used to send the responses to the request-proxy")
-	consumingChunkTopic := flag.String("consuming-chunk-topic", "dkr-request-chunk", "This topic is used to retrieve chunks from the request-proxy")
-	producingChunkTopic := flag.String("producing-chunk-topic", "dkr-response-chunk", "This topic is used to send chunks to the request-proxy")
+	consumingTopic := flag.String("consuming-topic", "dkr-request", "This topic is used to retrieve the requests from the request-proxy")
+	producingTopic := flag.String("producing-topic", "dkr-response", "This topic is used to send the responses to the request-proxy")
 
 	flag.Parse()
 
@@ -42,10 +38,8 @@ func GetResponseProxyConfig() *ResponseProxyConfig {
 		ConsumerKafkaConfig: consumerKafkaConfig,
 		Directory:           *directory,
 		RemoteURL:           *remoteURL,
-		ConsumingRPCTopic:   *consumingRPCTopic,
-		ProducingRPCTopic:   *producingRPCTopic,
-		ConsumingChunkTopic: *consumingChunkTopic,
-		ProducingChunkTopic: *producingChunkTopic,
+		ConsumingTopic:      *consumingTopic,
+		ProducingTopic:      *producingTopic,
 	}
 
 	return responseProxyConfig

@@ -70,53 +70,60 @@ func GetKafkaConfigMap() (*kafka.ConfigMap, *kafka.ConfigMap) {
 	configMaps = append(configMaps, producerConfigMap)
 
 	for _, configMap := range configMaps {
-		configMap.SetKey("client.id", *kafkaClientId)
-		configMap.SetKey("metadata.broker.list", *kafkaMetadataBrokerList)
+		kafkaConfigMapSetKeyOrFatal(configMap, "client.id", *kafkaClientId)
+		kafkaConfigMapSetKeyOrFatal(configMap, "metadata.broker.list", *kafkaMetadataBrokerList)
 		if kafkaDebug != nil && len(*kafkaDebug) > 0 {
-			configMap.SetKey("debug", *kafkaDebug)
+			kafkaConfigMapSetKeyOrFatal(configMap, "debug", *kafkaDebug)
 		}
-		configMap.SetKey("socket.timeout.ms", int(*kafkaSocketTimeoutMs))
-		configMap.SetKey("socket.keepalive.enable", *kafkaSocketKeepalive)
-		configMap.SetKey("socket.nagle.disable", *kafkaSocketNoNagle)
-		configMap.SetKey("broker.address.family", *kafkaBrokerAddressFamily)
-		configMap.SetKey("log_level", int(*kafkaLogLevel))
-		configMap.SetKey("security.protocol", *kafkaSecurityProtocol)
-		configMap.SetKey("ssl.key.location", *kafkaPrivateKeyFile)
-		configMap.SetKey("ssl.key.password", *kafkaPrivateKeyPassphrase)
-		configMap.SetKey("ssl.certificate.location", *kafkaPublicKeyFile)
-		configMap.SetKey("ssl.ca.location", *kafkaCAPath)
-		configMap.SetKey("enable.ssl.certificate.verification", *kafkaVerifyCertificates)
+		kafkaConfigMapSetKeyOrFatal(configMap, "socket.timeout.ms", int(*kafkaSocketTimeoutMs))
+		kafkaConfigMapSetKeyOrFatal(configMap, "socket.keepalive.enable", *kafkaSocketKeepalive)
+		kafkaConfigMapSetKeyOrFatal(configMap, "socket.nagle.disable", *kafkaSocketNoNagle)
+		kafkaConfigMapSetKeyOrFatal(configMap, "broker.address.family", *kafkaBrokerAddressFamily)
+		kafkaConfigMapSetKeyOrFatal(configMap, "log_level", int(*kafkaLogLevel))
+		kafkaConfigMapSetKeyOrFatal(configMap, "security.protocol", *kafkaSecurityProtocol)
+		kafkaConfigMapSetKeyOrFatal(configMap, "ssl.key.location", *kafkaPrivateKeyFile)
+		kafkaConfigMapSetKeyOrFatal(configMap, "ssl.key.password", *kafkaPrivateKeyPassphrase)
+		kafkaConfigMapSetKeyOrFatal(configMap, "ssl.certificate.location", *kafkaPublicKeyFile)
+		kafkaConfigMapSetKeyOrFatal(configMap, "ssl.ca.location", *kafkaCAPath)
+		kafkaConfigMapSetKeyOrFatal(configMap, "enable.ssl.certificate.verification", *kafkaVerifyCertificates)
 
 		if configMap == consumerConfigMap {
 			determineAndSetGroupID(configMap)
-			configMap.SetKey("group.instance.id", *kafkaGroupInstanceID)
+			kafkaConfigMapSetKeyOrFatal(configMap, "group.instance.id", *kafkaGroupInstanceID)
 			// We don't want old stuff when starting the consumer
-			configMap.SetKey("auto.offset.reset", "latest")
+			kafkaConfigMapSetKeyOrFatal(configMap, "auto.offset.reset", "latest")
 		}
 		if configMap == producerConfigMap {
-			configMap.SetKey("compression.codec", *kafkaCompressionCodec)
+			kafkaConfigMapSetKeyOrFatal(configMap, "compression.codec", *kafkaCompressionCodec)
 		}
 
 		if kafkaSecurityProtocol != nil && strings.HasPrefix(*kafkaSecurityProtocol, "SASL_") {
-			configMap.SetKey("sasl.mechanism", *kafkaSASLMechanism)
-			configMap.SetKey("sasl.kerberos.service.name", *kafkaSASLKerberosServiceName)
-			configMap.SetKey("sasl.kerberos.principal", *kafkaSASLKerberosPrincipal)
-			configMap.SetKey("sasl.kerberos.keytab", *kafkaSASLKerberosKeytabFile)
-			configMap.SetKey("sasl.username", *kafkaSASLUsername)
-			configMap.SetKey("sasl.password", *kafkaSASLPassword)
-			configMap.SetKey("sasl.oauthbearer.config", *kafkaSASLOAuthBearerConfig)
-			configMap.SetKey("enable.sasl.oauthbearer.unsecure.jwt", *kafkaSASLOAuthBearerUnsecureJWT)
-			configMap.SetKey("sasl.oauthbearer.method", *kafkaSASLOAuthBearerMethod)
-			configMap.SetKey("sasl.oauthbearer.client.id", *kafkaSASLOAuthBearerClientID)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.mechanism", *kafkaSASLMechanism)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.kerberos.service.name", *kafkaSASLKerberosServiceName)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.kerberos.principal", *kafkaSASLKerberosPrincipal)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.kerberos.keytab", *kafkaSASLKerberosKeytabFile)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.username", *kafkaSASLUsername)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.password", *kafkaSASLPassword)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.oauthbearer.config", *kafkaSASLOAuthBearerConfig)
+			kafkaConfigMapSetKeyOrFatal(configMap, "enable.sasl.oauthbearer.unsecure.jwt", *kafkaSASLOAuthBearerUnsecureJWT)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.oauthbearer.method", *kafkaSASLOAuthBearerMethod)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.oauthbearer.client.id", *kafkaSASLOAuthBearerClientID)
 			if kafkaSASLOAuthBearerClientSecret != nil {
-				configMap.SetKey("sasl.oauthbearer.client.secret", *kafkaSASLOAuthBearerClientSecret)
+				kafkaConfigMapSetKeyOrFatal(configMap, "sasl.oauthbearer.client.secret", *kafkaSASLOAuthBearerClientSecret)
 			}
-			configMap.SetKey("sasl.oauthbearer.scope", *kafkaSASLOAuthBearerScope)
-			configMap.SetKey("sasl.oauthbearer.extensions", *kafkaSASLOAuthBearerExtensions)
-			configMap.SetKey("sasl.oauthbearer.token.endpoint.url", *kafkaSASLOAuthBearerTokenEndpointURL)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.oauthbearer.scope", *kafkaSASLOAuthBearerScope)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.oauthbearer.extensions", *kafkaSASLOAuthBearerExtensions)
+			kafkaConfigMapSetKeyOrFatal(configMap, "sasl.oauthbearer.token.endpoint.url", *kafkaSASLOAuthBearerTokenEndpointURL)
 		}
 	}
 	return producerConfigMap, consumerConfigMap
+}
+
+func kafkaConfigMapSetKeyOrFatal(m *kafka.ConfigMap, key string, value kafka.ConfigValue) {
+	err := m.SetKey(key, value)
+	if err != nil {
+		log.Fatalln("Could not set Kafka configuration map key:", key, "to value:", value, "error:", err.Error())
+	}
 }
 
 func determineAndSetGroupID(configMap *kafka.ConfigMap) {
@@ -127,9 +134,9 @@ func determineAndSetGroupID(configMap *kafka.ConfigMap) {
 		}
 		eventualGroupID := *kafkaGroupID + "-" + groupIDSuffix.String()
 		log.Println("Using group ID:", eventualGroupID)
-		configMap.SetKey("group.id", eventualGroupID)
+		kafkaConfigMapSetKeyOrFatal(configMap, "group.id", eventualGroupID)
 	} else {
 		log.Println("Using group ID:", *kafkaGroupID)
-		configMap.SetKey("group.id", *kafkaGroupID)
+		kafkaConfigMapSetKeyOrFatal(configMap, "group.id", *kafkaGroupID)
 	}
 }

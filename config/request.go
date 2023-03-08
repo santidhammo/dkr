@@ -5,6 +5,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"log"
 	"os"
+	"time"
 )
 
 type RequestProxyConfig struct {
@@ -19,10 +20,9 @@ type RequestProxyConfig struct {
 	PublicKey            []byte
 	PrivateKey           []byte
 	PrivateKeyPassphrase string
-	ProducingRPCTopic    string
-	ConsumingRPCTopic    string
-	ProducingChunkTopic  string
-	ConsumingChunkTopic  string
+	ProducingTopic       string
+	ConsumingTopic       string
+	MaxAwaitDuration     time.Duration
 }
 
 func (c *RequestProxyConfig) HttpScheme() string {
@@ -49,10 +49,9 @@ func GetRequestProxyConfig() *RequestProxyConfig {
 	publicKeyFile := flag.String("public-key", "", "Use the given public key for TLS encryption")
 	privateKeyFile := flag.String("private-key", "", "Use the given private key for TLS encryption")
 	privateKeyPassphrase := flag.String("private-key-passphrase", "", "Use this passphrase to decrypt the private key for TLS encryption")
-	producingRPCTopic := flag.String("producing-rpc-topic", "dkr-request", "This topic is used to send the requests to the response-proxy")
-	consumingRPCTopic := flag.String("consuming-rpc-topic", "dkr-response", "This topic is used to retrieve the responses from the response-proxy")
-	producingChunkTopic := flag.String("producing-chunk-topic", "dkr-request-chunk", "This topic is used to send chunks to the response-proxy")
-	consumingChunkTopic := flag.String("consuming-chunk-topic", "dkr-response-chunk", "This topic is used to retrieve chunks from the response-proxy")
+	producingTopic := flag.String("producing-topic", "dkr-request", "This topic is used to send the requests to the response-proxy")
+	consumingTopic := flag.String("consuming-topic", "dkr-response", "This topic is used to retrieve the responses from the response-proxy")
+	maxSyncTimeout := flag.Uint("max-sync-timeout-seconds", 60, "This timeout is used for the maximum delay between a produced request and consumed response")
 
 	flag.Parse()
 
@@ -120,10 +119,9 @@ func GetRequestProxyConfig() *RequestProxyConfig {
 		PublicKey:            publicKey,
 		PrivateKey:           privateKey,
 		PrivateKeyPassphrase: *privateKeyPassphrase,
-		ProducingRPCTopic:    *producingRPCTopic,
-		ConsumingRPCTopic:    *consumingRPCTopic,
-		ProducingChunkTopic:  *producingChunkTopic,
-		ConsumingChunkTopic:  *consumingChunkTopic,
+		ProducingTopic:       *producingTopic,
+		ConsumingTopic:       *consumingTopic,
+		MaxAwaitDuration:     time.Duration(uint(time.Second) * *maxSyncTimeout),
 	}
 
 	return requestProxyConfig
